@@ -9,6 +9,7 @@ import {
   Platform,
   ActivityIndicator,
   Alert,
+  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../src/context/AuthContext';
@@ -63,8 +64,12 @@ export default function LoginScreen() {
     >
       <View style={styles.content}>
         <View style={styles.header}>
-          <Ionicons name="map" size={64} color="#FF8C00" />
-          <Text style={styles.title}>Tours App</Text>
+          <Image 
+            source={require('../assets/images/logo.jpg')} 
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Text style={styles.title}>Tourstilla</Text>
           <Text style={styles.subtitle}>Gestión de Tours para Guías</Text>
         </View>
 
@@ -139,6 +144,10 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     marginBottom: 48,
+  },
+  logo: {
+    width: 120,
+    height: 120,
   },
   title: {
     fontSize: 32,
