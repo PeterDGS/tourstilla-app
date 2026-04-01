@@ -125,7 +125,7 @@ export default function GuideHomeScreen() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#00d9c0" />
+        <ActivityIndicator size="large" color="#FF8C00" />
       </View>
     );
   }
@@ -146,7 +146,7 @@ export default function GuideHomeScreen() {
       {/* Calendar Strip */}
       <View style={styles.calendarContainer}>
         <TouchableOpacity onPress={goToPreviousWeek} style={styles.arrowButton}>
-          <Ionicons name="chevron-back" size={24} color="#00d9c0" />
+          <Ionicons name="chevron-back" size={24} color="#FF8C00" />
         </TouchableOpacity>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.calendarStrip}>
           {getDates().map((date, index) => {
@@ -176,7 +176,7 @@ export default function GuideHomeScreen() {
           })}
         </ScrollView>
         <TouchableOpacity onPress={goToNextWeek} style={styles.arrowButton}>
-          <Ionicons name="chevron-forward" size={24} color="#00d9c0" />
+          <Ionicons name="chevron-forward" size={24} color="#FF8C00" />
         </TouchableOpacity>
       </View>
 
@@ -184,7 +184,7 @@ export default function GuideHomeScreen() {
       <ScrollView
         style={styles.toursList}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#00d9c0" />
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#FF8C00" />
         }
       >
         {filteredTours.length === 0 ? (
@@ -226,7 +226,7 @@ export default function GuideHomeScreen() {
                   <Ionicons
                     name={tour.accepted ? 'checkmark-circle' : 'checkmark-circle-outline'}
                     size={18}
-                    color={tour.accepted ? '#1a1a2e' : '#00d9c0'}
+                    color={tour.accepted ? '#1a1a2e' : '#FF8C00'}
                   />
                   <Text
                     style={[
@@ -379,7 +379,7 @@ export default function GuideHomeScreen() {
                   <Ionicons
                     name={selectedTour.accepted ? 'checkmark-circle' : 'checkmark-circle-outline'}
                     size={24}
-                    color={selectedTour.accepted ? '#1a1a2e' : '#00d9c0'}
+                    color={selectedTour.accepted ? '#1a1a2e' : '#FF8C00'}
                   />
                   <Text
                     style={[
@@ -450,7 +450,7 @@ const styles = StyleSheet.create({
     minWidth: 60,
   },
   dateItemSelected: {
-    backgroundColor: '#00d9c0',
+    backgroundColor: '#FF8C00',
   },
   monthText: {
     fontSize: 10,
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#00d9c0',
+    backgroundColor: '#FF8C00',
     marginTop: 4,
   },
   tourIndicatorSelected: {
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
   participantBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#00d9c0',
+    backgroundColor: '#FF8C00',
     borderRadius: 10,
     paddingHorizontal: 6,
     paddingVertical: 2,
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
   tourName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#00d9c0',
+    color: '#FF8C00',
     marginBottom: 4,
   },
   locationRow: {
@@ -558,15 +558,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#00d9c0',
+    borderColor: '#FF8C00',
     marginTop: 8,
   },
   acceptedButton: {
-    backgroundColor: '#00d9c0',
-    borderColor: '#00d9c0',
+    backgroundColor: '#FF8C00',
+    borderColor: '#FF8C00',
   },
   acceptButtonText: {
-    color: '#00d9c0',
+    color: '#FF8C00',
     marginLeft: 6,
     fontWeight: '600',
   },
@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#00d9c0',
+    color: '#FF8C00',
   },
   statLabel: {
     fontSize: 12,
@@ -663,7 +663,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   participantCountBadge: {
-    backgroundColor: '#00d9c0',
+    backgroundColor: '#FF8C00',
     borderRadius: 12,
     paddingHorizontal: 10,
     paddingVertical: 4,
@@ -685,7 +685,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#00d9c0',
+    backgroundColor: '#FF8C00',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -738,16 +738,16 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#00d9c0',
+    borderColor: '#FF8C00',
     marginBottom: 40,
   },
   modalAcceptedButton: {
-    backgroundColor: '#00d9c0',
+    backgroundColor: '#FF8C00',
   },
   modalAcceptButtonText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#00d9c0',
+    color: '#FF8C00',
     marginLeft: 8,
   },
   modalAcceptedButtonText: {

@@ -51,7 +51,7 @@ export default function LoginScreen() {
   if (authLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#00d9c0" />
+        <ActivityIndicator size="large" color="#FF8C00" />
       </View>
     );
   }
@@ -63,7 +63,7 @@ export default function LoginScreen() {
     >
       <View style={styles.content}>
         <View style={styles.header}>
-          <Ionicons name="map" size={64} color="#00d9c0" />
+          <Ionicons name="map" size={64} color="#FF8C00" />
           <Text style={styles.title}>Tours App</Text>
           <Text style={styles.subtitle}>Gestión de Tours para Guías</Text>
         </View>
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#00d9c0',
+    backgroundColor: '#FF8C00',
     height: 56,
     borderRadius: 12,
     justifyContent: 'center',

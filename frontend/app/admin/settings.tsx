@@ -51,7 +51,7 @@ export default function AdminSettingsScreen() {
 
         <View style={styles.menuSection}>
           <View style={styles.menuItem}>
-            <Ionicons name="information-circle-outline" size={24} color="#00d9c0" />
+            <Ionicons name="information-circle-outline" size={24} color="#FF8C00" />
             <View style={styles.menuItemContent}>
               <Text style={styles.menuItemTitle}>Versión</Text>
               <Text style={styles.menuItemValue}>1.0.0</Text>
@@ -59,7 +59,7 @@ export default function AdminSettingsScreen() {
           </View>
 
           <View style={styles.menuItem}>
-            <Ionicons name="help-circle-outline" size={24} color="#00d9c0" />
+            <Ionicons name="help-circle-outline" size={24} color="#FF8C00" />
             <View style={styles.menuItemContent}>
               <Text style={styles.menuItemTitle}>Ayuda</Text>
               <Text style={styles.menuItemValue}>Soporte técnico</Text>
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#00d9c0',
+    backgroundColor: '#FF8C00',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -123,14 +123,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   roleBadge: {
-    backgroundColor: '#00d9c033',
+    backgroundColor: '#FF8C0033',
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: 16,
     marginTop: 12,
   },
   roleText: {
-    color: '#00d9c0',
+    color: '#FF8C00',
     fontWeight: '600',
   },
   menuSection: {

@@ -14,7 +14,7 @@ export default function AdminLayout() {
           paddingBottom: 8,
           paddingTop: 8,
         },
-        tabBarActiveTintColor: '#00d9c0',
+        tabBarActiveTintColor: '#FF8C00',
         tabBarInactiveTintColor: '#888',
       }}
     >

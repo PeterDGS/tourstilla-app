@@ -208,7 +208,7 @@ export default function AdminToursScreen() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#00d9c0" />
+        <ActivityIndicator size="large" color="#FF8C00" />
       </View>
     );
   }
@@ -245,7 +245,7 @@ export default function AdminToursScreen() {
       <ScrollView
         style={styles.list}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#00d9c0" />
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#FF8C00" />
         }
       >
         {tours.length === 0 ? (
@@ -261,7 +261,7 @@ export default function AdminToursScreen() {
                 <Text style={styles.tourName}>{tour.tour_name}</Text>
                 <View style={styles.tourActions}>
                   <TouchableOpacity onPress={() => handleOpenModal(tour)} style={styles.actionBtn}>
-                    <Ionicons name="pencil" size={18} color="#00d9c0" />
+                    <Ionicons name="pencil" size={18} color="#FF8C00" />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => handleDeleteTour(tour)} style={styles.actionBtn}>
                     <Ionicons name="trash-outline" size={18} color="#ff6b6b" />
@@ -406,7 +406,7 @@ export default function AdminToursScreen() {
                     style={styles.addParticipantBtn}
                     onPress={() => setShowParticipantModal(true)}
                   >
-                    <Ionicons name="add" size={20} color="#00d9c0" />
+                    <Ionicons name="add" size={20} color="#FF8C00" />
                     <Text style={styles.addParticipantText}>Agregar</Text>
                   </TouchableOpacity>
                 </View>
@@ -570,7 +570,7 @@ const styles = StyleSheet.create({
   headerButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#00d9c0',
+    backgroundColor: '#FF8C00',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 8,
@@ -616,7 +616,7 @@ const styles = StyleSheet.create({
   tourName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#00d9c0',
+    color: '#FF8C00',
     flex: 1,
   },
   tourActions: {
@@ -647,7 +647,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   statusAccepted: {
-    backgroundColor: '#00d9c033',
+    backgroundColor: '#FF8C0033',
   },
   statusText: {
     color: '#fff',
@@ -739,7 +739,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   addParticipantText: {
-    color: '#00d9c0',
+    color: '#FF8C00',
     fontWeight: '600',
   },
   participantItem: {
@@ -763,7 +763,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   submitButton: {
-    backgroundColor: '#00d9c0',
+    backgroundColor: '#FF8C00',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -839,7 +839,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 14,
     borderRadius: 8,
-    backgroundColor: '#00d9c0',
+    backgroundColor: '#FF8C00',
     alignItems: 'center',
   },
   addParticipantConfirmText: {

@@ -115,7 +115,7 @@ export default function AdminGuidesScreen() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#00d9c0" />
+        <ActivityIndicator size="large" color="#FF8C00" />
       </View>
     );
   }
@@ -132,7 +132,7 @@ export default function AdminGuidesScreen() {
       <ScrollView
         style={styles.list}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#00d9c0" />
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#FF8C00" />
         }
       >
         {guides.length === 0 ? (
@@ -158,7 +158,7 @@ export default function AdminGuidesScreen() {
                   style={styles.actionButton}
                   onPress={() => handleOpenModal(guide)}
                 >
-                  <Ionicons name="pencil" size={18} color="#00d9c0" />
+                  <Ionicons name="pencil" size={18} color="#FF8C00" />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.actionButton}
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   addButton: {
-    backgroundColor: '#00d9c0',
+    backgroundColor: '#FF8C00',
     width: 44,
     height: 44,
     borderRadius: 22,
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#00d9c0',
+    backgroundColor: '#FF8C00',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
     borderColor: '#2a2a4a',
   },
   submitButton: {
-    backgroundColor: '#00d9c0',
+    backgroundColor: '#FF8C00',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
