@@ -8,8 +8,8 @@ export default function AdminLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#16213e',
-          borderTopColor: '#2a2a4a',
+          backgroundColor: '#FFECB3',
+          borderTopColor: '#FFD54F',
           height: 60,
           paddingBottom: 8,
           paddingTop: 8,

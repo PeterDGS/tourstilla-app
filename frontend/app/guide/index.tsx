@@ -226,7 +226,7 @@ export default function GuideHomeScreen() {
                   <Ionicons
                     name={tour.accepted ? 'checkmark-circle' : 'checkmark-circle-outline'}
                     size={18}
-                    color={tour.accepted ? '#1a1a2e' : '#FF8C00'}
+                    color={tour.accepted ? '#FFF8E1' : '#FF8C00'}
                   />
                   <Text
                     style={[
@@ -379,7 +379,7 @@ export default function GuideHomeScreen() {
                   <Ionicons
                     name={selectedTour.accepted ? 'checkmark-circle' : 'checkmark-circle-outline'}
                     size={24}
-                    color={selectedTour.accepted ? '#1a1a2e' : '#FF8C00'}
+                    color={selectedTour.accepted ? '#FFF8E1' : '#FF8C00'}
                   />
                   <Text
                     style={[
@@ -402,13 +402,13 @@ export default function GuideHomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#FFF8E1',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#FFF8E1',
   },
   header: {
     flexDirection: 'row',
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
   },
   logoutButton: {
     padding: 8,
@@ -446,7 +446,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     marginHorizontal: 4,
     borderRadius: 12,
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFECB3',
     minWidth: 60,
   },
   dateItemSelected: {
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
   dayNumber: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
   },
   dayName: {
     fontSize: 10,
@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   dateTextSelected: {
-    color: '#1a1a2e',
+    color: '#FFF8E1',
   },
   tourIndicator: {
     width: 6,
@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   tourIndicatorSelected: {
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#FFF8E1',
   },
   toursList: {
     flex: 1,
@@ -497,13 +497,13 @@ const styles = StyleSheet.create({
   tourCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFECB3',
     borderRadius: 16,
     marginVertical: 8,
     overflow: 'hidden',
   },
   timeContainer: {
-    backgroundColor: '#2a2a4a',
+    backgroundColor: '#FFE082',
     paddingHorizontal: 16,
     paddingVertical: 20,
     justifyContent: 'center',
@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
   tourTime: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
   },
   participantBadge: {
     flexDirection: 'row',
@@ -527,7 +527,7 @@ const styles = StyleSheet.create({
   participantCount: {
     fontSize: 11,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
     marginLeft: 3,
   },
   tourInfo: {
@@ -571,11 +571,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   acceptedButtonText: {
-    color: '#1a1a2e',
+    color: '#FFF8E1',
   },
   footer: {
     flexDirection: 'row',
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFECB3',
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderTopLeftRadius: 24,
@@ -597,7 +597,7 @@ const styles = StyleSheet.create({
   },
   statDivider: {
     width: 1,
-    backgroundColor: '#2a2a4a',
+    backgroundColor: '#FFE082',
   },
   // Modal Styles
   modalOverlay: {
@@ -606,7 +606,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#FFF8E1',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     maxHeight: '90%',
@@ -617,12 +617,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#2a2a4a',
+    borderBottomColor: '#FFE082',
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
   },
   modalBody: {
     padding: 20,
@@ -645,7 +645,7 @@ const styles = StyleSheet.create({
   },
   detailValue: {
     fontSize: 16,
-    color: '#fff',
+    color: '#333',
     fontWeight: '500',
   },
   participantsSection: {
@@ -660,7 +660,7 @@ const styles = StyleSheet.create({
   participantsTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
   },
   participantCountBadge: {
     backgroundColor: '#FF8C00',
@@ -672,11 +672,11 @@ const styles = StyleSheet.create({
   participantCountText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#1a1a2e',
+    color: '#FFF8E1',
   },
   participantCard: {
     flexDirection: 'row',
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFECB3',
     borderRadius: 12,
     padding: 12,
     marginBottom: 10,
@@ -692,7 +692,7 @@ const styles = StyleSheet.create({
   participantInitial: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1a1a2e',
+    color: '#FFF8E1',
   },
   participantInfo: {
     flex: 1,
@@ -701,7 +701,7 @@ const styles = StyleSheet.create({
   participantName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#fff',
+    color: '#333',
     marginBottom: 4,
   },
   participantDetail: {
@@ -723,7 +723,7 @@ const styles = StyleSheet.create({
   noParticipants: {
     alignItems: 'center',
     paddingVertical: 30,
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFECB3',
     borderRadius: 12,
   },
   noParticipantsText: {
@@ -751,6 +751,6 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   modalAcceptedButtonText: {
-    color: '#1a1a2e',
+    color: '#FFF8E1',
   },
 });

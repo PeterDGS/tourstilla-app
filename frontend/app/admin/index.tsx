@@ -543,13 +543,13 @@ export default function AdminToursScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#FFF8E1',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#FFF8E1',
   },
   header: {
     flexDirection: 'row',
@@ -561,7 +561,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
   },
   headerButtons: {
     flexDirection: 'row',
@@ -580,7 +580,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   headerButtonText: {
-    color: '#fff',
+    color: '#333',
     fontWeight: '600',
   },
   list: {
@@ -602,7 +602,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   tourCard: {
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFECB3',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -635,7 +635,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   detailText: {
-    color: '#ccc',
+    color: '#555',
     fontSize: 14,
   },
   statusBadge: {
@@ -650,7 +650,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF8C0033',
   },
   statusText: {
-    color: '#fff',
+    color: '#333',
     fontSize: 12,
     fontWeight: '600',
   },
@@ -660,7 +660,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#FFF8E1',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     maxHeight: '90%',
@@ -671,12 +671,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#2a2a4a',
+    borderBottomColor: '#FFE082',
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
   },
   modalForm: {
     padding: 20,
@@ -688,13 +688,13 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   textInput: {
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFECB3',
     borderRadius: 12,
     padding: 16,
-    color: '#fff',
+    color: '#333',
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#2a2a4a',
+    borderColor: '#FFE082',
   },
   textArea: {
     minHeight: 80,
@@ -708,17 +708,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   selectInput: {
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFECB3',
     borderRadius: 12,
     padding: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#2a2a4a',
+    borderColor: '#FFE082',
   },
   selectText: {
-    color: '#fff',
+    color: '#333',
     fontSize: 16,
   },
   selectPlaceholder: {
@@ -745,7 +745,7 @@ const styles = StyleSheet.create({
   participantItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFECB3',
     borderRadius: 8,
     padding: 12,
     marginTop: 8,
@@ -754,7 +754,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   participantItemName: {
-    color: '#fff',
+    color: '#333',
     fontSize: 15,
     fontWeight: '500',
   },
@@ -771,12 +771,12 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   submitButtonText: {
-    color: '#1a1a2e',
+    color: '#FFF8E1',
     fontSize: 18,
     fontWeight: 'bold',
   },
   selectorContent: {
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFECB3',
     margin: 20,
     borderRadius: 16,
     maxHeight: '60%',
@@ -784,18 +784,18 @@ const styles = StyleSheet.create({
   selectorTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#2a2a4a',
+    borderBottomColor: '#FFE082',
   },
   selectorItem: {
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#2a2a4a',
+    borderBottomColor: '#FFE082',
   },
   selectorItemText: {
-    color: '#fff',
+    color: '#333',
     fontSize: 16,
     fontWeight: '600',
   },
@@ -813,7 +813,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   participantModalContent: {
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#FFF8E1',
     margin: 20,
     borderRadius: 16,
     padding: 20,
@@ -843,7 +843,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addParticipantConfirmText: {
-    color: '#1a1a2e',
+    color: '#FFF8E1',
     fontWeight: '600',
   },
 });

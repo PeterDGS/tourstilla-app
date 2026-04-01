@@ -239,13 +239,13 @@ export default function AdminGuidesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#FFF8E1',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#FFF8E1',
   },
   header: {
     flexDirection: 'row',
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
   },
   addButton: {
     backgroundColor: '#FF8C00',
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
   guideCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFECB3',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#1a1a2e',
+    color: '#FFF8E1',
   },
   guideInfo: {
     flex: 1,
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
   guideName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#fff',
+    color: '#333',
   },
   guideEmail: {
     fontSize: 14,
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#2a2a4a',
+    backgroundColor: '#FFE082',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#FFF8E1',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     maxHeight: '80%',
@@ -349,12 +349,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#2a2a4a',
+    borderBottomColor: '#FFE082',
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
   },
   modalForm: {
     padding: 20,
@@ -366,13 +366,13 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   textInput: {
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFECB3',
     borderRadius: 12,
     padding: 16,
-    color: '#fff',
+    color: '#333',
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#2a2a4a',
+    borderColor: '#FFE082',
   },
   submitButton: {
     backgroundColor: '#FF8C00',
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   submitButtonText: {
-    color: '#1a1a2e',
+    color: '#FFF8E1',
     fontSize: 18,
     fontWeight: 'bold',
   },

@@ -79,7 +79,7 @@ export default function AdminSettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#FFF8E1',
   },
   header: {
     paddingHorizontal: 20,
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
   },
   content: {
     flex: 1,
@@ -109,12 +109,12 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#1a1a2e',
+    color: '#FFF8E1',
   },
   userName: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
     marginTop: 16,
   },
   userEmail: {
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   menuSection: {
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFECB3',
     borderRadius: 16,
     marginTop: 16,
   },
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#2a2a4a',
+    borderBottomColor: '#FFE082',
   },
   menuItemContent: {
     flex: 1,
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   },
   menuItemTitle: {
     fontSize: 16,
-    color: '#fff',
+    color: '#333',
   },
   menuItemValue: {
     fontSize: 14,
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#16213e',
+    backgroundColor: '#FFECB3',
     borderRadius: 16,
     padding: 16,
     marginTop: 32,
