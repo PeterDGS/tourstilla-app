@@ -23,6 +23,13 @@ export interface Guide {
   role: string;
 }
 
+export interface Participant {
+  name: string;
+  phone?: string;
+  email?: string;
+  notes?: string;
+}
+
 export interface Tour {
   id: string;
   guide_id: string;
@@ -32,6 +39,11 @@ export interface Tour {
   location: string;
   date: string;
   time: string;
+  duration?: string;
+  meeting_point?: string;
+  notes?: string;
+  participants: Participant[];
+  participant_count: number;
   accepted: boolean;
 }
 
@@ -46,11 +58,16 @@ export const deleteGuide = (id: string) => api.delete(`/api/guides/${id}`);
 // Tours
 export const getTours = () => api.get<Tour[]>('/api/tours');
 export const getMyTours = () => api.get<Tour[]>('/api/tours/my-tours');
-export const createTour = (data: Omit<Tour, 'id' | 'accepted'>) =>
+export const getTour = (id: string) => api.get<Tour>(`/api/tours/${id}`);
+export const createTour = (data: Omit<Tour, 'id' | 'accepted' | 'participant_count'>) =>
   api.post<Tour>('/api/tours', data);
 export const updateTour = (id: string, data: Partial<Tour>) =>
   api.put(`/api/tours/${id}`, data);
 export const deleteTour = (id: string) => api.delete(`/api/tours/${id}`);
+
+// Push token
+export const registerPushToken = (push_token: string) =>
+  api.post('/api/auth/push-token', { push_token });
 
 // Excel upload
 export const uploadExcel = async (fileUri: string, fileName: string) => {

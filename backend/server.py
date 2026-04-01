@@ -13,6 +13,7 @@ from bson import ObjectId
 import pandas as pd
 from io import BytesIO
 import traceback
+import httpx
 
 load_dotenv()
 
@@ -38,11 +39,17 @@ db = client[DB_NAME]
 security = HTTPBearer()
 
 # Pydantic Models
+class Participant(BaseModel):
+    name: str
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    notes: Optional[str] = None
+
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
     name: str
-    role: str = "guide"  # admin or guide
+    role: str = "guide"
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -54,6 +61,9 @@ class UserResponse(BaseModel):
     name: str
     role: str
 
+class PushTokenUpdate(BaseModel):
+    push_token: str
+
 class TourCreate(BaseModel):
     guide_id: str
     guide_name: str
@@ -62,6 +72,10 @@ class TourCreate(BaseModel):
     location: str
     date: str  # YYYY-MM-DD
     time: str  # HH:MM
+    duration: Optional[str] = "2 horas"
+    meeting_point: Optional[str] = None
+    notes: Optional[str] = None
+    participants: Optional[List[Participant]] = []
     accepted: bool = False
 
 class TourUpdate(BaseModel):
@@ -69,6 +83,10 @@ class TourUpdate(BaseModel):
     location: Optional[str] = None
     date: Optional[str] = None
     time: Optional[str] = None
+    duration: Optional[str] = None
+    meeting_point: Optional[str] = None
+    notes: Optional[str] = None
+    participants: Optional[List[dict]] = None
     accepted: Optional[bool] = None
 
 class TourResponse(BaseModel):
@@ -80,6 +98,11 @@ class TourResponse(BaseModel):
     location: str
     date: str
     time: str
+    duration: Optional[str] = "2 horas"
+    meeting_point: Optional[str] = None
+    notes: Optional[str] = None
+    participants: List[dict] = []
+    participant_count: int = 0
     accepted: bool
 
 # Helper functions
@@ -114,6 +137,31 @@ async def require_admin(user = Depends(get_current_user)):
     if user.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Acceso solo para administradores")
     return user
+
+# Push Notification helper
+async def send_push_notification(push_token: str, title: str, body: str, data: dict = None):
+    if not push_token or not push_token.startswith("ExponentPushToken"):
+        return False
+    
+    try:
+        message = {
+            "to": push_token,
+            "sound": "default",
+            "title": title,
+            "body": body,
+            "data": data or {}
+        }
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "https://exp.host/--/api/v2/push/send",
+                json=message,
+                headers={"Content-Type": "application/json"}
+            )
+            return response.status_code == 200
+    except Exception as e:
+        print(f"Error sending push notification: {e}")
+        return False
 
 # Initialize admin user
 @app.on_event("startup")
@@ -159,6 +207,15 @@ async def get_me(user = Depends(get_current_user)):
         "name": user["name"],
         "role": user["role"]
     }
+
+# Push token registration
+@app.post("/api/auth/push-token")
+async def register_push_token(data: PushTokenUpdate, user = Depends(get_current_user)):
+    await db.users.update_one(
+        {"_id": user["_id"]},
+        {"$set": {"push_token": data.push_token}}
+    )
+    return {"message": "Push token registrado"}
 
 # Guide management (Admin only)
 @app.post("/api/guides", response_model=UserResponse)
@@ -221,6 +278,8 @@ async def update_guide(guide_id: str, data: UserCreate, admin = Depends(require_
 # Tour management
 @app.post("/api/tours", response_model=TourResponse)
 async def create_tour(data: TourCreate, admin = Depends(require_admin)):
+    participants = [p.dict() if hasattr(p, 'dict') else p for p in (data.participants or [])]
+    
     tour_data = {
         "guide_id": data.guide_id,
         "guide_name": data.guide_name,
@@ -229,13 +288,40 @@ async def create_tour(data: TourCreate, admin = Depends(require_admin)):
         "location": data.location,
         "date": data.date,
         "time": data.time,
+        "duration": data.duration or "2 horas",
+        "meeting_point": data.meeting_point,
+        "notes": data.notes,
+        "participants": participants,
         "accepted": False,
         "created_at": datetime.utcnow()
     }
     result = await db.tours.insert_one(tour_data)
+    
+    # Send push notification to guide
+    guide = await db.users.find_one({"_id": ObjectId(data.guide_id)})
+    if guide and guide.get("push_token"):
+        await send_push_notification(
+            guide["push_token"],
+            "¡Nuevo Tour Asignado!",
+            f"{data.tour_name} - {data.date} a las {data.time}",
+            {"tour_id": str(result.inserted_id)}
+        )
+    
     return TourResponse(
         id=str(result.inserted_id),
-        **{k: v for k, v in tour_data.items() if k not in ["created_at", "_id"]}
+        guide_id=data.guide_id,
+        guide_name=data.guide_name,
+        guide_email=data.guide_email,
+        tour_name=data.tour_name,
+        location=data.location,
+        date=data.date,
+        time=data.time,
+        duration=data.duration or "2 horas",
+        meeting_point=data.meeting_point,
+        notes=data.notes,
+        participants=participants,
+        participant_count=len(participants),
+        accepted=False
     )
 
 @app.get("/api/tours")
@@ -250,6 +336,11 @@ async def list_all_tours(admin = Depends(require_admin)):
         "location": t["location"],
         "date": t["date"],
         "time": t["time"],
+        "duration": t.get("duration", "2 horas"),
+        "meeting_point": t.get("meeting_point"),
+        "notes": t.get("notes"),
+        "participants": t.get("participants", []),
+        "participant_count": len(t.get("participants", [])),
         "accepted": t.get("accepted", False)
     } for t in tours]
 
@@ -265,14 +356,51 @@ async def get_my_tours(user = Depends(get_current_user)):
         "location": t["location"],
         "date": t["date"],
         "time": t["time"],
+        "duration": t.get("duration", "2 horas"),
+        "meeting_point": t.get("meeting_point"),
+        "notes": t.get("notes"),
+        "participants": t.get("participants", []),
+        "participant_count": len(t.get("participants", [])),
         "accepted": t.get("accepted", False)
     } for t in tours]
+
+@app.get("/api/tours/{tour_id}")
+async def get_tour(tour_id: str, user = Depends(get_current_user)):
+    tour = await db.tours.find_one({"_id": ObjectId(tour_id)})
+    if not tour:
+        raise HTTPException(status_code=404, detail="Tour no encontrado")
+    
+    # Check permission
+    if user["role"] != "admin" and tour["guide_id"] != str(user["_id"]):
+        raise HTTPException(status_code=403, detail="No tienes permiso para ver este tour")
+    
+    return {
+        "id": str(tour["_id"]),
+        "guide_id": tour["guide_id"],
+        "guide_name": tour["guide_name"],
+        "guide_email": tour["guide_email"],
+        "tour_name": tour["tour_name"],
+        "location": tour["location"],
+        "date": tour["date"],
+        "time": tour["time"],
+        "duration": tour.get("duration", "2 horas"),
+        "meeting_point": tour.get("meeting_point"),
+        "notes": tour.get("notes"),
+        "participants": tour.get("participants", []),
+        "participant_count": len(tour.get("participants", [])),
+        "accepted": tour.get("accepted", False)
+    }
 
 @app.put("/api/tours/{tour_id}")
 async def update_tour(tour_id: str, data: TourUpdate, user = Depends(get_current_user)):
     update_data = {k: v for k, v in data.dict().items() if v is not None}
     if not update_data:
         raise HTTPException(status_code=400, detail="No hay datos para actualizar")
+    
+    # Get original tour for notification
+    original_tour = await db.tours.find_one({"_id": ObjectId(tour_id)})
+    if not original_tour:
+        raise HTTPException(status_code=404, detail="Tour no encontrado")
     
     # Guides can only update accepted status
     if user["role"] == "guide":
@@ -287,6 +415,16 @@ async def update_tour(tour_id: str, data: TourUpdate, user = Depends(get_current
             {"_id": ObjectId(tour_id)},
             {"$set": update_data}
         )
+        
+        # Send notification to guide if tour was modified
+        guide = await db.users.find_one({"_id": ObjectId(original_tour["guide_id"])})
+        if guide and guide.get("push_token"):
+            await send_push_notification(
+                guide["push_token"],
+                "Tour Actualizado",
+                f"{original_tour['tour_name']} ha sido modificado",
+                {"tour_id": tour_id}
+            )
     
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Tour no encontrado")
@@ -316,6 +454,7 @@ async def upload_excel(file: UploadFile = File(...), admin = Depends(require_adm
         
         tours_created = 0
         guides_created = 0
+        notifications_sent = 0
         
         for _, row in df.iterrows():
             email = str(row["EMAIL"]).strip().lower()
@@ -355,7 +494,7 @@ async def upload_excel(file: UploadFile = File(...), admin = Depends(require_adm
             location = str(row["LUGAR"]).strip()
             
             # Create tour
-            await db.tours.insert_one({
+            tour_result = await db.tours.insert_one({
                 "guide_id": guide_id,
                 "guide_name": name,
                 "guide_email": email,
@@ -363,15 +502,32 @@ async def upload_excel(file: UploadFile = File(...), admin = Depends(require_adm
                 "location": location,
                 "date": date_str,
                 "time": time_str,
+                "duration": "2 horas",
+                "meeting_point": None,
+                "notes": None,
+                "participants": [],
                 "accepted": False,
                 "created_at": datetime.utcnow()
             })
             tours_created += 1
+            
+            # Send push notification
+            guide_with_token = await db.users.find_one({"_id": ObjectId(guide_id)})
+            if guide_with_token and guide_with_token.get("push_token"):
+                sent = await send_push_notification(
+                    guide_with_token["push_token"],
+                    "¡Nuevo Tour Asignado!",
+                    f"{tour_name} - {date_str} a las {time_str}",
+                    {"tour_id": str(tour_result.inserted_id)}
+                )
+                if sent:
+                    notifications_sent += 1
         
         return {
             "message": "Excel procesado correctamente",
             "tours_created": tours_created,
-            "guides_created": guides_created
+            "guides_created": guides_created,
+            "notifications_sent": notifications_sent
         }
     except HTTPException:
         raise

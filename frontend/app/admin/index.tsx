@@ -17,7 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { getTours, createTour, deleteTour, uploadExcel, getGuides, Guide, Tour } from '../../src/api/api';
+import { getTours, createTour, updateTour, deleteTour, uploadExcel, getGuides, Guide, Tour, Participant } from '../../src/api/api';
 
 export default function AdminToursScreen() {
   const [tours, setTours] = useState<Tour[]>([]);
@@ -26,6 +26,7 @@ export default function AdminToursScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [editingTour, setEditingTour] = useState<Tour | null>(null);
 
   // Form state
   const [selectedGuide, setSelectedGuide] = useState<Guide | null>(null);
@@ -33,7 +34,18 @@ export default function AdminToursScreen() {
   const [location, setLocation] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const [duration, setDuration] = useState('2 horas');
+  const [meetingPoint, setMeetingPoint] = useState('');
+  const [notes, setNotes] = useState('');
+  const [participants, setParticipants] = useState<Participant[]>([]);
   const [showGuideSelector, setShowGuideSelector] = useState(false);
+  const [showParticipantModal, setShowParticipantModal] = useState(false);
+  
+  // Participant form
+  const [participantName, setParticipantName] = useState('');
+  const [participantPhone, setParticipantPhone] = useState('');
+  const [participantEmail, setParticipantEmail] = useState('');
+  const [participantNotes, setParticipantNotes] = useState('');
 
   const loadData = useCallback(async () => {
     try {
@@ -70,7 +82,7 @@ export default function AdminToursScreen() {
           const response = await uploadExcel(file.uri, file.name);
           Alert.alert(
             'Éxito',
-            `Tours creados: ${response.data.tours_created}\nGuías creados: ${response.data.guides_created}`
+            `Tours creados: ${response.data.tours_created}\nGuías creados: ${response.data.guides_created}\nNotificaciones enviadas: ${response.data.notifications_sent}`
           );
           loadData();
         } catch (error: any) {
@@ -84,14 +96,33 @@ export default function AdminToursScreen() {
     }
   };
 
-  const handleCreateTour = async () => {
+  const handleOpenModal = (tour?: Tour) => {
+    if (tour) {
+      setEditingTour(tour);
+      const guide = guides.find(g => g.id === tour.guide_id);
+      setSelectedGuide(guide || null);
+      setTourName(tour.tour_name);
+      setLocation(tour.location);
+      setDate(tour.date);
+      setTime(tour.time);
+      setDuration(tour.duration || '2 horas');
+      setMeetingPoint(tour.meeting_point || '');
+      setNotes(tour.notes || '');
+      setParticipants(tour.participants || []);
+    } else {
+      resetForm();
+    }
+    setModalVisible(true);
+  };
+
+  const handleSaveTour = async () => {
     if (!selectedGuide || !tourName || !location || !date || !time) {
-      Alert.alert('Error', 'Por favor completa todos los campos');
+      Alert.alert('Error', 'Por favor completa todos los campos requeridos');
       return;
     }
 
     try {
-      await createTour({
+      const tourData = {
         guide_id: selectedGuide.id,
         guide_name: selectedGuide.name,
         guide_email: selectedGuide.email,
@@ -99,13 +130,24 @@ export default function AdminToursScreen() {
         location: location,
         date: date,
         time: time,
-      });
+        duration: duration,
+        meeting_point: meetingPoint || null,
+        notes: notes || null,
+        participants: participants,
+      };
+
+      if (editingTour) {
+        await updateTour(editingTour.id, tourData);
+        Alert.alert('Éxito', 'Tour actualizado correctamente');
+      } else {
+        await createTour(tourData as any);
+        Alert.alert('Éxito', 'Tour creado correctamente. Se ha enviado notificación al guía.');
+      }
       setModalVisible(false);
       resetForm();
       loadData();
-      Alert.alert('Éxito', 'Tour creado correctamente');
     } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.detail || 'Error al crear el tour');
+      Alert.alert('Error', error.response?.data?.detail || 'Error al guardar el tour');
     }
   };
 
@@ -127,12 +169,40 @@ export default function AdminToursScreen() {
     ]);
   };
 
+  const handleAddParticipant = () => {
+    if (!participantName.trim()) {
+      Alert.alert('Error', 'El nombre del participante es requerido');
+      return;
+    }
+
+    setParticipants([...participants, {
+      name: participantName,
+      phone: participantPhone || undefined,
+      email: participantEmail || undefined,
+      notes: participantNotes || undefined,
+    }]);
+    setParticipantName('');
+    setParticipantPhone('');
+    setParticipantEmail('');
+    setParticipantNotes('');
+    setShowParticipantModal(false);
+  };
+
+  const handleRemoveParticipant = (index: number) => {
+    setParticipants(participants.filter((_, i) => i !== index));
+  };
+
   const resetForm = () => {
+    setEditingTour(null);
     setSelectedGuide(null);
     setTourName('');
     setLocation('');
     setDate('');
     setTime('');
+    setDuration('2 horas');
+    setMeetingPoint('');
+    setNotes('');
+    setParticipants([]);
   };
 
   if (loading) {
@@ -164,7 +234,7 @@ export default function AdminToursScreen() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.headerButton}
-            onPress={() => setModalVisible(true)}
+            onPress={() => handleOpenModal()}
           >
             <Ionicons name="add" size={18} color="#fff" />
             <Text style={styles.headerButtonText}>Nuevo</Text>
@@ -186,12 +256,17 @@ export default function AdminToursScreen() {
           </View>
         ) : (
           tours.map((tour) => (
-            <View key={tour.id} style={styles.tourCard}>
+            <TouchableOpacity key={tour.id} style={styles.tourCard} onPress={() => handleOpenModal(tour)}>
               <View style={styles.tourHeader}>
                 <Text style={styles.tourName}>{tour.tour_name}</Text>
-                <TouchableOpacity onPress={() => handleDeleteTour(tour)}>
-                  <Ionicons name="trash-outline" size={20} color="#ff6b6b" />
-                </TouchableOpacity>
+                <View style={styles.tourActions}>
+                  <TouchableOpacity onPress={() => handleOpenModal(tour)} style={styles.actionBtn}>
+                    <Ionicons name="pencil" size={18} color="#00d9c0" />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleDeleteTour(tour)} style={styles.actionBtn}>
+                    <Ionicons name="trash-outline" size={18} color="#ff6b6b" />
+                  </TouchableOpacity>
+                </View>
               </View>
               <View style={styles.tourDetails}>
                 <View style={styles.detailRow}>
@@ -208,18 +283,22 @@ export default function AdminToursScreen() {
                   <Ionicons name="location-outline" size={14} color="#888" />
                   <Text style={styles.detailText}>{tour.location}</Text>
                 </View>
+                <View style={styles.detailRow}>
+                  <Ionicons name="people-outline" size={14} color="#888" />
+                  <Text style={styles.detailText}>{tour.participant_count} participantes</Text>
+                </View>
               </View>
               <View style={[styles.statusBadge, tour.accepted && styles.statusAccepted]}>
                 <Text style={styles.statusText}>
                   {tour.accepted ? 'Aceptado' : 'Pendiente'}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
           ))
         )}
       </ScrollView>
 
-      {/* Create Tour Modal */}
+      {/* Create/Edit Tour Modal */}
       <Modal
         visible={modalVisible}
         animationType="slide"
@@ -229,14 +308,16 @@ export default function AdminToursScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Nuevo Tour</Text>
+              <Text style={styles.modalTitle}>
+                {editingTour ? 'Editar Tour' : 'Nuevo Tour'}
+              </Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
                 <Ionicons name="close" size={24} color="#fff" />
               </TouchableOpacity>
             </View>
 
             <ScrollView style={styles.modalForm}>
-              <Text style={styles.inputLabel}>Guía</Text>
+              <Text style={styles.inputLabel}>Guía *</Text>
               <TouchableOpacity
                 style={styles.selectInput}
                 onPress={() => setShowGuideSelector(true)}
@@ -247,7 +328,7 @@ export default function AdminToursScreen() {
                 <Ionicons name="chevron-down" size={20} color="#888" />
               </TouchableOpacity>
 
-              <Text style={styles.inputLabel}>Nombre del Tour</Text>
+              <Text style={styles.inputLabel}>Nombre del Tour *</Text>
               <TextInput
                 style={styles.textInput}
                 value={tourName}
@@ -256,7 +337,7 @@ export default function AdminToursScreen() {
                 placeholderTextColor="#666"
               />
 
-              <Text style={styles.inputLabel}>Ubicación</Text>
+              <Text style={styles.inputLabel}>Ubicación *</Text>
               <TextInput
                 style={styles.textInput}
                 value={location}
@@ -265,26 +346,88 @@ export default function AdminToursScreen() {
                 placeholderTextColor="#666"
               />
 
-              <Text style={styles.inputLabel}>Fecha (YYYY-MM-DD)</Text>
+              <View style={styles.rowInputs}>
+                <View style={styles.halfInput}>
+                  <Text style={styles.inputLabel}>Fecha *</Text>
+                  <TextInput
+                    style={styles.textInput}
+                    value={date}
+                    onChangeText={setDate}
+                    placeholder="YYYY-MM-DD"
+                    placeholderTextColor="#666"
+                  />
+                </View>
+                <View style={styles.halfInput}>
+                  <Text style={styles.inputLabel}>Hora *</Text>
+                  <TextInput
+                    style={styles.textInput}
+                    value={time}
+                    onChangeText={setTime}
+                    placeholder="HH:MM"
+                    placeholderTextColor="#666"
+                  />
+                </View>
+              </View>
+
+              <Text style={styles.inputLabel}>Duración</Text>
               <TextInput
                 style={styles.textInput}
-                value={date}
-                onChangeText={setDate}
-                placeholder="2025-07-15"
+                value={duration}
+                onChangeText={setDuration}
+                placeholder="Ej: 2 horas"
                 placeholderTextColor="#666"
               />
 
-              <Text style={styles.inputLabel}>Hora (HH:MM)</Text>
+              <Text style={styles.inputLabel}>Punto de Encuentro</Text>
               <TextInput
                 style={styles.textInput}
-                value={time}
-                onChangeText={setTime}
-                placeholder="10:00"
+                value={meetingPoint}
+                onChangeText={setMeetingPoint}
+                placeholder="Dirección o referencia"
                 placeholderTextColor="#666"
               />
 
-              <TouchableOpacity style={styles.submitButton} onPress={handleCreateTour}>
-                <Text style={styles.submitButtonText}>Crear Tour</Text>
+              <Text style={styles.inputLabel}>Notas</Text>
+              <TextInput
+                style={[styles.textInput, styles.textArea]}
+                value={notes}
+                onChangeText={setNotes}
+                placeholder="Notas adicionales para el guía"
+                placeholderTextColor="#666"
+                multiline
+                numberOfLines={3}
+              />
+
+              {/* Participants Section */}
+              <View style={styles.participantsSection}>
+                <View style={styles.participantsHeader}>
+                  <Text style={styles.inputLabel}>Participantes ({participants.length})</Text>
+                  <TouchableOpacity
+                    style={styles.addParticipantBtn}
+                    onPress={() => setShowParticipantModal(true)}
+                  >
+                    <Ionicons name="add" size={20} color="#00d9c0" />
+                    <Text style={styles.addParticipantText}>Agregar</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {participants.map((p, index) => (
+                  <View key={index} style={styles.participantItem}>
+                    <View style={styles.participantItemInfo}>
+                      <Text style={styles.participantItemName}>{p.name}</Text>
+                      {p.phone && <Text style={styles.participantItemDetail}>{p.phone}</Text>}
+                    </View>
+                    <TouchableOpacity onPress={() => handleRemoveParticipant(index)}>
+                      <Ionicons name="close-circle" size={24} color="#ff6b6b" />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+
+              <TouchableOpacity style={styles.submitButton} onPress={handleSaveTour}>
+                <Text style={styles.submitButtonText}>
+                  {editingTour ? 'Guardar Cambios' : 'Crear Tour'}
+                </Text>
               </TouchableOpacity>
             </ScrollView>
           </View>
@@ -322,6 +465,74 @@ export default function AdminToursScreen() {
             >
               <Text style={styles.selectorCancelText}>Cancelar</Text>
             </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Add Participant Modal */}
+      <Modal
+        visible={showParticipantModal}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setShowParticipantModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.participantModalContent}>
+            <Text style={styles.selectorTitle}>Agregar Participante</Text>
+            
+            <Text style={styles.inputLabel}>Nombre *</Text>
+            <TextInput
+              style={styles.textInput}
+              value={participantName}
+              onChangeText={setParticipantName}
+              placeholder="Nombre completo"
+              placeholderTextColor="#666"
+            />
+
+            <Text style={styles.inputLabel}>Teléfono</Text>
+            <TextInput
+              style={styles.textInput}
+              value={participantPhone}
+              onChangeText={setParticipantPhone}
+              placeholder="+34 600 000 000"
+              placeholderTextColor="#666"
+              keyboardType="phone-pad"
+            />
+
+            <Text style={styles.inputLabel}>Email</Text>
+            <TextInput
+              style={styles.textInput}
+              value={participantEmail}
+              onChangeText={setParticipantEmail}
+              placeholder="email@ejemplo.com"
+              placeholderTextColor="#666"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+
+            <Text style={styles.inputLabel}>Notas</Text>
+            <TextInput
+              style={styles.textInput}
+              value={participantNotes}
+              onChangeText={setParticipantNotes}
+              placeholder="Notas adicionales"
+              placeholderTextColor="#666"
+            />
+
+            <View style={styles.participantModalButtons}>
+              <TouchableOpacity
+                style={styles.cancelParticipantBtn}
+                onPress={() => setShowParticipantModal(false)}
+              >
+                <Text style={styles.cancelParticipantText}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.addParticipantConfirmBtn}
+                onPress={handleAddParticipant}
+              >
+                <Text style={styles.addParticipantConfirmText}>Agregar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -406,6 +617,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#00d9c0',
+    flex: 1,
+  },
+  tourActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  actionBtn: {
+    padding: 4,
   },
   tourDetails: {
     gap: 6,
@@ -444,7 +663,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a1a2e',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    maxHeight: '80%',
+    maxHeight: '90%',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -477,6 +696,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#2a2a4a',
   },
+  textArea: {
+    minHeight: 80,
+    textAlignVertical: 'top',
+  },
+  rowInputs: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  halfInput: {
+    flex: 1,
+  },
   selectInput: {
     backgroundColor: '#16213e',
     borderRadius: 12,
@@ -494,6 +724,43 @@ const styles = StyleSheet.create({
   selectPlaceholder: {
     color: '#666',
     fontSize: 16,
+  },
+  participantsSection: {
+    marginTop: 16,
+  },
+  participantsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  addParticipantBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  addParticipantText: {
+    color: '#00d9c0',
+    fontWeight: '600',
+  },
+  participantItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#16213e',
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 8,
+  },
+  participantItemInfo: {
+    flex: 1,
+  },
+  participantItemName: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  participantItemDetail: {
+    color: '#888',
+    fontSize: 13,
   },
   submitButton: {
     backgroundColor: '#00d9c0',
@@ -544,5 +811,39 @@ const styles = StyleSheet.create({
   selectorCancelText: {
     color: '#ff6b6b',
     fontSize: 16,
+  },
+  participantModalContent: {
+    backgroundColor: '#1a1a2e',
+    margin: 20,
+    borderRadius: 16,
+    padding: 20,
+  },
+  participantModalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 24,
+  },
+  cancelParticipantBtn: {
+    flex: 1,
+    padding: 14,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ff6b6b',
+    alignItems: 'center',
+  },
+  cancelParticipantText: {
+    color: '#ff6b6b',
+    fontWeight: '600',
+  },
+  addParticipantConfirmBtn: {
+    flex: 1,
+    padding: 14,
+    borderRadius: 8,
+    backgroundColor: '#00d9c0',
+    alignItems: 'center',
+  },
+  addParticipantConfirmText: {
+    color: '#1a1a2e',
+    fontWeight: '600',
   },
 });
