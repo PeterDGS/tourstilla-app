@@ -6,8 +6,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      npm_config_yes: true
     steps:
       - uses: actions/checkout@v4
       
@@ -17,9 +15,6 @@ jobs:
           
       - name: Install EAS CLI
         run: npm install -g eas-cli
-        
-      - name: Login to Expo
-        run: npx eas-cli login --token ${{ secrets.EXPO_TOKEN }}
           
       - name: Install dependencies
         working-directory: frontend
@@ -29,4 +24,6 @@ jobs:
           
       - name: Build APK
         working-directory: frontend
-        run: npx eas-cli build --platform android --profile preview --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas build --platform android --profile preview --non-interactive
