@@ -20,9 +20,12 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
           
       - name: Install dependencies
-        run: yarn install
-        working-directory: frontend
-        
+        run: |
+          cd frontend
+          rm -f yarn.lock
+          npm install
+          
       - name: Build APK
-        run: eas build --platform android --profile preview --non-interactive
-        working-directory: frontend
+        run: |
+          cd frontend
+          eas build --platform android --profile preview --non-interactive
