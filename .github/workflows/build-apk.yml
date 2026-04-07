@@ -13,8 +13,12 @@ jobs:
         with:
           node-version: 18
           
-      - name: Install EAS CLI
-        run: npm install -g eas-cli
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
           
       - name: Install dependencies
         working-directory: frontend
@@ -22,15 +26,6 @@ jobs:
           rm -f yarn.lock
           npm install --legacy-peer-deps
           
-      - name: Configure EAS
-        working-directory: frontend
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: |
-          eas init --id e3a1f5b2-1234-5678-abcd-1234567890ab --non-interactive || true
-          
       - name: Build APK
         working-directory: frontend
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: eas build --platform android --profile preview --non-interactive --no-wait
+        run: eas build --platform android --profile preview --non-interactive
