@@ -276,7 +276,7 @@ export default function AdminToursScreen() {
                 <View style={styles.detailRow}>
                   <Ionicons name="calendar-outline" size={14} color="#888" />
                   <Text style={styles.detailText}>
-                    {format(parseISO(tour.date), "d MMM yyyy", { locale: es })} - {tour.time}
+                    {tour.date} - {tour.time}
                   </Text>
                 </View>
                 <View style={styles.detailRow}>
