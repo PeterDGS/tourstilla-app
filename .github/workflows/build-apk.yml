@@ -6,6 +6,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      npm_config_yes: true
     steps:
       - uses: actions/checkout@v4
       
@@ -13,19 +15,18 @@ jobs:
         with:
           node-version: 18
           
-      - uses: expo/expo-github-action@v8
-        with:
-          expo-version: latest
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
+        
+      - name: Login to Expo
+        run: npx eas-cli login --token ${{ secrets.EXPO_TOKEN }}
           
       - name: Install dependencies
+        working-directory: frontend
         run: |
-          cd frontend
           rm -f yarn.lock
-          npm install
+          npm install --legacy-peer-deps
           
       - name: Build APK
-        run: |
-          cd frontend
-          eas build --platform android --profile preview --non-interactive
+        working-directory: frontend
+        run: npx eas-cli build --platform android --profile preview --non-interactive
